@@ -14,12 +14,11 @@ const listOfPhoneNumbers = envalid.makeValidator((value) => {
   throw new Error('Wrong format for the list of phone numbers');
 });
 
-const callbackUrlPath = envalid.makeValidator((value) => {
-  if (_.isString(value)) {
-    if (/^(\/[a-z].*)*$/.test(value)) {
-      return value;
-    }
+const callbackPath = envalid.makeValidator((value) => {
+  if (_.isString(value) && value.length > 1 && value[0] === '/' && !value.includes('//')) {
+    return value;
   }
+
   throw new Error('Wrong format for the callback URL');
 });
 
@@ -45,7 +44,7 @@ module.exports = envalid.cleanEnv(process.env, {
     default: 'NULL',
     desc: 'paypal client secret',
   }),
-  PAYPAL_REDIRECT_URL: callbackUrlPath({
+  PAYPAL_REDIRECT_URL: callbackPath({
     default: '/callback',
     desc: 'paypal redirect url',
   }),
